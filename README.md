@@ -12,23 +12,24 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## demo
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+启动项目之后，我们可以直接访问`网站域名/1/1`
+其中`/1/1`会命中到`[uid]/[did].tsx`
+这是一个 SSG 动态增量页面
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## 更新 SSG 页面缓存
 
-## Learn More
+我们在使用`getStaticProps`的时候设置了`revalidate`即数据有效时间，
+例如我们设置`revaildate=60`,则表示在`60s`之内，当前页面的数据是不会发生变化，不会去请求数据库的数据，而是直接使用`json`数据
+那我们假设更新了页面的内容，但是`revaildate`的有效时间又还没有过期，这样用户就无法访问的最新的内容，那我们就可以使用使用`next.js`的`API`功能对页面进行强制重新验证
 
-To learn more about Next.js, take a look at the following resources:
+```
+https://<你的网站>/api/revalidate?secret=<你设置的token>&path=<你要更新的页面路径>
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`token`记得在项目的`.env`文件中配置，到时候是需要与`.env`文件的变量比对的
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+其中`/api/revalidate(这个可以自己定义名字，在pages下面的api目录下面)?secret(可以自己定义)=<你设置的token>&path=<你要更新的页面路径>`
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+更多的详情可以查看当前项目的`/pages/api/revalidate.js`
