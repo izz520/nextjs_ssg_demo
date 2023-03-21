@@ -1,8 +1,13 @@
 import axios from "axios";
-
+import Head from 'next/head';
 const Detail = ({ time }: { time: any }) => {
     return (
-        <div>{time}</div>
+        <>
+            <Head>
+                <title>{time}</title>
+            </Head>
+            <div>{time}</div>
+        </>
     )
 }
 
